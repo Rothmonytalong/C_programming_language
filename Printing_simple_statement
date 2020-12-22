@@ -1,0 +1,11 @@
+#include <stdio.h>
+
+int main(int argc, const char * argv[]) 
+{
+    
+    printf("This class is \"Awsome sauce\"!\n");
+    printf("Hello, my name is Rothmonyta Long. ");
+    printf("I love to study coding and sitting in a quite area.");
+    return 0;
+    
+}
