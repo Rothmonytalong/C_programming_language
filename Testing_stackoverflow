@@ -1,0 +1,50 @@
+#include <stdio.h>
+
+// Declaring two functions
+void down_from_ten_to_zero(int number);
+void up_from_zero_to_ten(int number);
+
+// Function main
+int main(int argc, char * argv[])
+{
+    
+    // Assining the value 10 to a variable in data type integer
+    int input = 10;
+    // Calling the function down_from_ten_to_zero
+    down_from_ten_to_zero(input);
+    //Printing the astrik
+    printf("****\n");
+    // Calling the function up_from_zero_to_ten
+    up_from_zero_to_ten(input);
+    
+    // Returning the value 0
+    return 0;
+   
+}
+void down_from_ten_to_zero(int number)
+{
+    
+    // Using if condition which number starts from 0 to 10
+    if(number >= 0){
+        
+        // Printing the values stores in the local variable number
+        printf("%d\n",number);
+        // Calling the function down_from_ten_to_zero by subtract one each time
+        down_from_ten_to_zero(number-1);
+    }
+}
+    
+void up_from_zero_to_ten(int number)
+{
+    
+    // Using if condition which number starts from 0 to 10
+    if(number >= 0){
+        // Calling the function up_from_zero_to_ten by subtract one each time
+        up_from_zero_to_ten(number-1);
+        // Printing the value stores in the local variable number after substracting one each time
+        printf("%d\n",number);
+    }
+        
+    }
+    
+    
