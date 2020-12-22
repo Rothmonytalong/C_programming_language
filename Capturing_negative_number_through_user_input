@@ -1,0 +1,30 @@
+#include <stdio.h>
+
+void clear_keyboard_buffer(void)
+{
+    
+    char c;
+    scanf("%c", &c);
+    while(c!= '\n'){
+        scanf("%c",&c);
+    }
+}
+int main(int argc, const char * argv[]) 
+{
+   
+    int number;
+    printf("Please enter a negative integer:");
+    scanf("%d", &number);
+    
+    while(number >= 0)
+    {
+        printf("I'm sorry, you must enter a negative integer less than zero:");
+        clear_keyboard_buffer();
+        scanf("%d", &number);
+        
+        if(number < 0){
+            printf("The negative integer was: %d\n", number);
+        }
+    }
+    return 0;
+}
