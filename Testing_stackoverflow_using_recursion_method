@@ -1,0 +1,35 @@
+#include <stdio.h>
+
+void loop_down_to_zero(int down_number);
+void loop_up_to_int(int up_number);
+
+int main(int argc, const char * argv[]) {
+    
+    int input;
+    printf("Please enter the postive value:");
+    scanf("%d", &input);
+    loop_down_to_zero(input);
+    printf("****\n");
+    loop_up_to_int(input);
+    
+    return 0;
+}
+
+void loop_down_to_zero(int down_number){
+    int number = 0;
+    while(number <= down_number){
+        printf("%d\n",number);
+        number++;
+    }
+    
+}
+
+void loop_up_to_int(int up_number){
+    int number = up_number;
+    while(number >= 0){
+        printf("%d\n",number);
+        number--;
+    }
+}
+
+
