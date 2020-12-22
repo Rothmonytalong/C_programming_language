@@ -1,0 +1,45 @@
+#include <stdio.h>
+void clear_keyboard_buffer(void);
+void draw_line(int number);
+
+int main(int argc, const char * argv[]) 
+{
+   
+    int number_asterisk;
+    printf("Please enter the number of asterisks you want in your line:");
+    scanf("%d", &number_asterisk);
+    clear_keyboard_buffer();
+    
+    while(number_asterisk < 1  || number_asterisk > 79){
+           
+        printf("I'm sorry, that number is unrecognized or out of range, try[1-79] : ");
+        scanf("%d", &number_asterisk);
+        clear_keyboard_buffer();
+       
+    }
+    
+    if(number_asterisk >= 1 || number_asterisk <= 79){
+        draw_line(number_asterisk);
+        
+    }
+    
+    return 0;
+}
+
+void clear_keyboard_buffer()
+{
+    char c;
+    scanf("%c",&c);
+    while(c!= '\n'){
+        scanf("%c",&c);
+    }
+}
+void draw_line(int number){
+    
+    for (int i = 1 ; i <= number; i++){
+        printf("*");
+        
+    }
+    
+}
+
