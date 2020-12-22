@@ -1,78 +1,21 @@
 //
 //  main.c
-//  Program_1
+//  Daily3
+//  Author: Rothmonyta Long
+//  Date: 01/30/2020
+//  Output: This class is "Awsome sauce"!
+//          Hello, my name is Rothmonyta Long. I love to          study coding and sitting in a quite          area.Program ended with exit code: 0
+//  Created by Rothmonyta Long on 1/30/20.
+//  Copyright © 2020 Rothmonyta Long. All rights reserved.
 //
-//
-/**********************************************************************
-  Author:         Rothmonta Long
-  Purpose:        This program is creating a table of number
-                  by using Collatz formula
-  
-****************************************************************************/
 
 #include <stdio.h>
-void generate_report(int start_value,int end_value);
-int collatz(int n);
 
 int main(int argc, const char * argv[]) {
     
-    int start_value;
-    int end_value;
-    printf("Enter the start value:");
-    scanf("%d",&start_value);
-    printf("Enter the end value:");
-    scanf("%d",&end_value);
-    
-    while(start_value <= 1 && start_value > 1000 )
-    {
-        
-        printf("Enter the start value again:");
-        scanf("%d",&start_value);
-    }
-    while(end_value > 1000 && end_value > start_value)
-    {
-        printf("Enter the end value again:");
-        scanf("%d",&end_value);
-    }
-    
-   generate_report(start_value,end_value);
-    
+    printf("This class is \"Awsome sauce\"!\n");
+    printf("Hello, my name is Rothmonyta Long. ");
+    printf("I love to study coding and sitting in a quite area.");
     return 0;
-}
-
-
-void generate_report(int start_value,int end_value){
-    int i;
-    int count = 0;
-    for(i = start_value ; i <= end_value; i++)
-    {
-        printf("%5d:%-5d",i,collatz(i));
-        
-        count++ ;
-        if(count == 7)
-        {
-            printf("\n");
-            count = 0;
-        }
-    }
-}
-
-int collatz(int n)
-{
-    int count = 0;
-    while(n != 1)
-    {
-        if(n % 2 == 0)
-        {
-            n/=2;
-        }
-        else
-        {
-            n= ((n*3)+1);
-        }
-        count++;
-    }
     
-    return count;
 }
-
