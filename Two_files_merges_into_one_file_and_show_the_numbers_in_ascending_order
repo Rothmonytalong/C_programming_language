@@ -1,0 +1,58 @@
+#include <stdio.h>
+#include<stdlib.h>
+
+void comparing(FILE*file1,FILE*file2,FILE*file3);
+int main(int argc, const char * argv[]) 
+{
+    
+    FILE *file1,*file2,*file3;
+    file1 = fopen("numbers1.txt","r");
+    file2 = fopen("numbers2.txt","r");
+    file3 = fopen("output.txt", "w");
+    
+    if(file1 == NULL || file2 == NULL || file3 == NULL)
+    {
+        printf("\nError : Cannot open file");
+        exit(1);
+    }
+    
+    comparing(file1,file2,file3);
+    fclose(file1);
+    fclose(file2);
+    fclose(file3);
+    
+    
+    return 0;
+    
+}
+void comparing(FILE*file1,FILE*file2,FILE*file3)
+{
+    
+    int number1, number2, value1,value2;
+    number1 = fscanf(file1,"%d",&value1);
+    number2 = fscanf(file2,"%d",&value2);
+    
+    while(number1 != EOF || number2 != EOF)
+    {
+        if(number2 == EOF || number1 < number2)
+        {
+            fprintf(file3,"%d\n",value1);
+            number1 = fscanf(file1,"%d",&value1);
+        }
+        else if(number1 == EOF || number1 > number2)
+        {
+            fprintf(file3,"%d\n",value2);
+            number2 = fscanf(file2,"%d",&value2);
+        }
+        else
+        {
+            fprintf(file3,"%d\n%d\n",value1,value2);
+            number1 = fscanf(file1,"%d",&value1);
+            number2 = fscanf(file2,"%d",&value2);
+        }
+        
+    }
+    
+}
+
+
