@@ -1,0 +1,28 @@
+#include <stdio.h>
+int  print_binary(int decimal)
+
+{
+    int calculation;
+    if(decimal == 0)
+    {
+        calculation = 0;
+        printf("%d",calculation);
+    }
+    
+    else 
+    {
+        
+        calculation = ((decimal % 2 )+ 10 * print_binary (decimal/2));
+        printf("%d",calculation);
+       
+    }
+    return 0;
+}
+
+int main(int argc, const char * argv[]) 
+{
+    
+    int decimal = 43;
+    print_binary(decimal);
+    return 0;
+}
