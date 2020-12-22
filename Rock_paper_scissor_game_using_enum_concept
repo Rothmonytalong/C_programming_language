@@ -1,0 +1,138 @@
+#include <stdio.h>
+enum choice {ROCK, PAPER, SCISSORS};
+typedef enum choice Choice;
+
+void clear_keyboard_buffer(void);
+int user_wishes_to_continue(void);
+Choice user_input(void);
+void determine_winner(Choice player1, Choice player2);
+
+
+int main(int argc, const char * argv[]) 
+{
+        
+        Choice player1;
+        Choice player2;
+        
+        do
+        {
+            printf("Player 1 it is your turn!\n");
+            player1 = user_input();
+            printf("Player 2 it is your turn!\n");
+            player2 = user_input();
+            
+            determine_winner(player1,player2);
+        }while(user_wishes_to_continue());
+
+    }
+
+Choice user_input(void)
+{
+        
+        char input;
+        printf("Please choose (r)ock, (p)aper, or (s)cissor:");
+        scanf("%c", &input);
+        clear_keyboard_buffer();
+        
+        while(input != 'r' && input != 'R' && input != 's' && input != 'S'
+              && input != 'p' && input != 'P')
+        {
+            printf("I'm sorry but you must enter 'r', 's', 'p'.\n");
+            printf("Please choose (r)ock, (p)aper, or (s)cissor:");
+            scanf("%c", &input);
+            clear_keyboard_buffer();
+        }
+        
+        if(input == 'p' || input == 'P'){
+            
+            return PAPER;
+        }
+        if(input ==  'r' || input == 'R'){
+           
+            return ROCK;
+        }
+        if(input == 's' || input == 'S'){
+            
+            return SCISSORS;
+        }
+        
+        return input;
+    }
+void determine_winner(Choice player1,Choice player2)
+{
+        
+        switch(player1)
+        {
+            case ROCK:
+                switch(player2)
+                {
+                    case ROCK:
+                        printf("Draw! Nobdy wins!\n");
+                        break;
+                    case PAPER:
+                        printf("Paper covers rock.Player 2 wins!\n");
+                        break;
+                    case SCISSORS:
+                        printf("Rock breaks scissor.Player 1 wins!\n");
+                        break;
+                }
+                break;
+            
+            case PAPER:
+                switch(player2)
+                {
+                    case ROCK:
+                        printf("Paper covers rock. Player 1 wins!\n");
+                        break;
+                    case PAPER:
+                        printf("Draw!Nobody wins!\n");
+                        break;
+                    case SCISSORS:
+                        printf("Scissor cuts paper.Player 2 wins!\n");
+                        break;
+                }
+                break;
+            
+            case SCISSORS:
+                switch(player2)
+                {
+                    case ROCK:
+                        printf("Rock breaks scissor.Player 2 wins!\n");
+                        break;
+                    case PAPER:
+                        printf("Scissor cuts paper.Player 1 wins!\n");
+                        break;
+                    case SCISSORS:
+                        printf("Draw!Nobody wins!\n");
+                        break;
+                        
+                }
+                break;
+                    
+        }
+        
+    }
+        
+int user_wishes_to_continue(void)
+{
+        char c;
+        printf("Do you wish to continue ?(y/n):");
+        scanf(" %c",&c);
+        clear_keyboard_buffer();
+        while(c != 'y' && c != 'Y' && c != 'n' && c != 'N'){
+            printf("I'm sorry but you must enter either y or n:");
+            scanf(" %c",&c);
+            clear_keyboard_buffer();
+        }
+        return c == 'y'|| c == 'Y';
+    }
+
+void clear_keyboard_buffer(void)
+{
+        char c;
+        scanf("%c",&c);
+        while(c != '\n'){
+            scanf("%c",&c);
+        }
+ }
+    
