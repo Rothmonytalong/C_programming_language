@@ -2,15 +2,12 @@
 //  main.c
 //  Program_1
 //
-//  Created by Rothmonyta Long on 3/31/20.
-//  Copyright © 2020 Rothmonyta Long. All rights reserved.
 //
 /**********************************************************************
   Author:         Rothmonta Long
-  Date:            04/03/2020
-  Purpose:       This program is creating a table of number
-            by using Collatz formula
-  Time Spent:   I spent three hours to solve this problem
+  Purpose:        This program is creating a table of number
+                  by using Collatz formula
+  
 ****************************************************************************/
 
 #include <stdio.h>
