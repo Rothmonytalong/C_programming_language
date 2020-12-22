@@ -1,0 +1,26 @@
+#include <stdio.h>
+
+void  smile(void)
+{
+    
+    // Creating a smiley face
+    printf("\t* * * *\n");
+    printf(" *\t %c\t %c\t*\n",'.','.');
+    printf("*\t  \\_/\t *\n");
+    printf("*\t\t\t *\n");
+    printf(" *\t\t\t*\n");
+    printf("\t* * * *\n");
+    
+}
+
+int main(int argc, char * argv[])
+{
+    
+    // Calling the smile function three time
+    smile();
+    smile();
+    smile();
+    
+    // Returning the value 0 of the function main
+    return 0;
+}
