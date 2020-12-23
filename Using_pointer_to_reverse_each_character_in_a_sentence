@@ -1,0 +1,38 @@
+#include <stdio.h>
+
+char * reverse(char word[]);
+
+int main(int argc, const char * argv[])
+{
+    
+    char word[] = "Happy Birthday!";
+    reverse(word);
+    printf("%s\n", word);
+    printf("%s\n",reverse(word));
+    printf("%s\n",word);
+    return 0;
+}
+
+char * reverse(char word[])
+{
+   
+    int i;
+    int index = 0;
+    char hold;
+    
+    
+    while (word[index] != '\0')
+    {
+        index++;
+        word[index];
+        
+    }
+    for(i = 0; i < (index +1)/2 ; i++)
+    {
+        hold = word[i];
+        word[i] = word[index-i-1];
+        word[index-i-1] = hold;
+    }
+    return word;
+    
+}
