@@ -1,0 +1,75 @@
+/******************** main.c file ********************/
+#include <stdio.h>
+#include <stdlib.h>
+#include "rational.h"
+int main(int argc, const char * argv[]) 
+{
+    RATIONAL hRational;
+    hRational = rational_init_default();
+    if(hRational == NULL)
+    {
+        printf("Failed to allocate memory for rational object \n");
+        exit(1);
+    }
+    rational_destroy(&hRational);
+    return 0;
+}
+
+/**************** rational.c file ***************/
+
+#include <stdlib.h>
+#include <stdio.h>
+#include "rational.h"
+
+struct rational
+{
+    int numerator;
+    int denominator;
+};
+
+typedef struct rational Rational;
+RATIONAL rational_init_default(void)
+{
+    Rational * pRational;
+    pRational = (Rational*) malloc(sizeof(Rational));
+    if(pRational != NULL)
+    {
+        pRational->numerator = 0;
+        pRational->denominator = 1;
+    }
+    
+    return (RATIONAL)pRational;
+    
+}
+void rational_destroy(RATIONAL*phRational)
+{
+    Rational* pRational = (Rational*)*phRational;
+    free(pRational);
+    *phRational = NULL;
+}
+
+/**************** rational.h file*****************/
+#ifndef RATIONAL_H
+#define RATIONAL_H
+
+
+typedef void* RATIONAL;
+RATIONAL rational_init_default(void);
+void rational_destroy(RATIONAL *phRational);
+
+
+#endif
+
+/***************** status.h file ****************/
+
+#ifndef STATUS_H
+#define STATUS_H
+
+enum status{FAILURE, SUCCESS};
+typdef enum status Status;
+
+enum boolean{FAILURE,SUCCESS};
+typedef enum boolean Boolean;
+
+#endif
+
