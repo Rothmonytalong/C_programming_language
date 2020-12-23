@@ -1,0 +1,219 @@
+/******************* main.c file ************************/
+#include <stdio.h>
+#include "bit_flags.h"
+
+int main(int argc, const char * argv[]) {
+    
+    int input = 4;
+    BIT_FLAGS test_index;
+    
+    
+    test_index = bit_flags_init_number_of_bits(input);
+    printf("Bit flags set: %d \n", bit_flags_set_flag(test_index,3));
+    printf("Bit flags size: %d\n", bit_flags_get_size(test_index));
+    printf("Bit flags capacity: %d\n", bit_flags_get_capacity(test_index));
+    printf("Bit flags check: %d \n\n", bit_flags_check_flag(test_index,3));
+    
+    
+    printf("Bit flags clear: %d\n", bit_flags_unset_flag(test_index,3));
+    printf("Bit flags size: %d\n", bit_flags_get_size(test_index));
+    printf("Bit flags capacity: %d\n", bit_flags_get_capacity(test_index));
+    printf("Bit flags check: %d \n\n", bit_flags_check_flag(test_index,3));
+    
+    bit_flags_destroy(&test_index);
+    
+    
+    return 0;
+}
+
+
+/***************** bit_flags.c file **************************/
+#include<stdio.h>
+#include<stdlib.h>
+#include"bit_flags.h"
+#include BITS_INDEX(sizeof(unsigned int)*8)
+
+
+typedef struct bit_flags
+{
+    int size;
+    int capacity;
+    int *bit;
+    
+}Bit_flags;
+
+BIT_FLAGS bit_flags_init_number_of_bits(int number_of_bits)
+{
+    int array_index = number_of_bits/BITS_INDEX;
+    Bit_flags* pBit_flags;
+    if(number_of_bits > 0)
+    {
+        pBit_flags = (Bit_flags*)malloc(sizeof(Bit_flags));
+        if(pBit_flags != NULL)
+        {
+            pBit_flags->capacity = sizeof(int);
+            pBit_flags->size = number_of_bits + 1 ;
+            pBit_flags->bit = (int*)malloc(sizeof(int));
+            
+            if(pBit_flags->bit != NULL)
+            {
+                *pBit_flags->bit = 0;
+                
+            }
+            else
+            {
+                printf("Memory is not set for bit value.\n");
+            }
+        }
+        
+        printf("Memory is created\n");
+    }
+    
+    else
+    {
+       
+        pBit_flags = NULL;
+    }
+    
+    return pBit_flags;
+}
+Status bit_flags_set_flag(BIT_FLAGS hBit_flags, int flag_position)
+{
+    
+    int bit_set = flag_position;
+    int* temp;
+    Bit_flags* phBit_flags = (Bit_flags*)hBit_flags;
+    
+    while(flag_position >= phBit_flags->capacity)
+    {
+        phBit_flags->capacity *= 2;
+        temp = (int*)malloc(sizeof(int) * phBit_flags->capacity);
+        if(temp != NULL)
+        {
+            *temp = *(phBit_flags->bit);
+            free(phBit_flags->bit);
+            phBit_flags->bit = temp;
+        }
+        else
+        {
+            return FAILURE;
+        }
+    }
+    
+    flag_position /= phBit_flags->capacity;
+    phBit_flags->bit[flag_position] |= 1 << (bit_set % phBit_flags->capacity);
+    phBit_flags->size--;
+    
+    printf("Bit set\n");
+    return SUCCESS;
+    
+}
+
+Status bit_flags_unset_flag(BIT_FLAGS hBit_flags, int flag_position)
+{
+    int bit_set = flag_position;
+    int* temp;
+    Bit_flags* phBit_flags = (Bit_flags*)hBit_flags;
+    
+    while(flag_position >= phBit_flags->capacity)
+    {
+        phBit_flags->capacity *= 2;
+        temp = (int*)malloc(sizeof(int)* phBit_flags->capacity);
+        if(temp != NULL)
+        {
+            *temp = *(phBit_flags->bit);
+            free(phBit_flags->bit);
+            phBit_flags->bit = temp;
+        }
+        
+        else
+        {
+            return FAILURE;
+            
+        }
+        
+        flag_position /= phBit_flags->capacity;
+        phBit_flags->bit[flag_position] &= ~(1 <<(bit_set % phBit_flags->capacity));
+        phBit_flags->size++;
+        
+        printf("Bit clear\n");
+        
+        //return SUCCESS;
+    }
+     
+    return SUCCESS ;
+}
+
+int bit_flags_check_flag(BIT_FLAGS hBit_flags, int flag_position)
+{
+    int bit = flag_position;
+    int bit_set = flag_position;
+    Bit_flags* phBit_flags = (Bit_flags*)hBit_flags;
+    
+    if(flag_position < 0 || flag_position > phBit_flags->capacity)
+    {
+        bit = -1;
+    }
+    else
+    {
+        flag_position /= phBit_flags->capacity;
+        if((phBit_flags->bit[flag_position] >> bit_set) & 1)
+        {
+            bit = phBit_flags->bit[flag_position];
+        }
+    }
+    
+    return bit;
+}
+
+int bit_flags_get_size(BIT_FLAGS hBit_flags)
+{
+    Bit_flags* phBit_flags = (Bit_flags*) hBit_flags;
+    return phBit_flags->size;
+}
+
+int bit_flags_get_capacity(BIT_FLAGS hBit_flags)
+{
+    Bit_flags* pBit_flags = (Bit_flags*) hBit_flags;
+    return pBit_flags->capacity;
+    
+}
+
+void bit_flags_destroy(BIT_FLAGS* phBit_flags)
+{
+    Bit_flags* pphBit_flags = (Bit_flags*) *phBit_flags;
+    if(pphBit_flags != NULL)
+    {
+        free(pphBit_flags->bit);
+        free(pphBit_flags);
+    }
+    pphBit_flags = NULL;
+}
+
+
+/****************** bit_flags.h file ***********************/
+#ifndef BIT_FLAGS_H
+#define BIT_FLAGS_H
+#include "status.h"
+
+typedef void* BIT_FLAGS;
+
+BIT_FLAGS bit_flags_init_number_of_bits(int number_of_bits);
+Status bit_flags_set_flag(BIT_FLAGS hBit_flags, int flag_position);
+Status bit_flags_unset_flag(BIT_FLAGS hBit_flags, int flag_position);
+int bit_flags_check_flag(BIT_FLAGS hBit_flags, int flag_position);
+int bit_flags_get_size(BIT_FLAGS hBit_flags);
+int bit_flags_get_capacity(BIT_FLAGS hBit_flags);tu
+void bit_flags_destroy(BIT_FLAGS* phBit_flags);
+
+#endif
+
+/*********** status.h file ******************************/
+#ifndef STATUS_H_
+#define STATUS_H_
+
+enum status{FAILURE, SUCCESS};
+typedef enum status Status;
+
+#endif
+
