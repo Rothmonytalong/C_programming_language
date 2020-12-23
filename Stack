@@ -1,0 +1,227 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include "stack.h"
+
+int test_work(void);
+void clear_keyboard_buffer(void);
+
+int main(int argc, const char * argv[]) 
+{
+    int a;
+    int j;
+    scanf("%d", &a);
+    clear_keyboard_buffer();
+    for(j = 0; j < a; j++)
+    {
+        if(test_work())
+        {
+            printf("Yes\n");
+            
+        }
+        else
+        {
+            printf("No\n");
+        }
+        
+    }
+    return 0;
+}
+
+int test_work(void)
+{
+    char character;
+    scanf("%c", &character);
+    int answer = 0;
+    Boolean stack_status;
+    
+    STACK hStack;
+    hStack = stack_init_default();
+    
+    while(character != '\n')
+    {
+        if(!answer)
+        {
+            if(character == '{' || character == '[' || character == '(')
+            {
+                stack_push(hStack,character);
+            }
+            else
+            {
+                if(character == ')' && stack_top(hStack) == '(')
+                {
+                    stack_pop(hStack);
+                }
+                else if(character == '}' && stack_top(hStack) == '{')
+                {
+                    stack_pop(hStack);
+                }
+                else if(character == ']' && stack_top(hStack) == '[')
+                {
+                    stack_pop(hStack);
+                }
+                else
+                {
+                    answer = 1;
+                }
+            }
+        }
+        
+        scanf("%c", &character);
+    }
+    stack_status = stack_empty(hStack);
+    stack_destroy(&hStack);
+    if(answer == 1 || stack_status == FALSE)
+    {
+        return 0;
+    }
+    return 1;
+}
+
+void clear_keyboard_buffer(void)
+{
+    char character;
+    int noc;
+    noc = scanf("%c", &character);
+    while(noc == 1 && character != '\n')
+    {
+        scanf("%c", &character);
+    }
+}
+
+/********************** stack.c file ************************/
+#include <stdio.h>
+#include <stdlib.h>
+#include "stack.h"
+
+struct node;
+typedef struct node Node;
+
+struct node
+{
+    char data;
+    Node* next;
+};
+
+struct stack;
+struct stack
+{
+    Node* top;
+};
+
+typedef struct stack Stack;
+
+STACK stack_init_default(void)
+{
+    Stack* pStack;
+    pStack = (Stack*)malloc(sizeof(Stack));
+    if(pStack != NULL)
+    {
+        pStack->top = NULL;
+    }
+    
+    return (STACK)pStack;
+}
+
+Status stack_push (STACK hStack, char value)
+{
+    Stack* pStack = (Stack*) hStack;
+    Node* temp;
+    temp = (Node*)malloc(sizeof(Node));
+    if(temp == NULL)
+    {
+        free(temp);
+        return FAILURE;
+    }
+   
+    temp->data = value;
+    temp->next = pStack->top;
+    pStack->top = temp;
+    return SUCCESS;
+    
+}
+
+Status stack_pop(STACK hStack)
+{
+    Stack* pStack = (Stack*)hStack;
+    if(pStack->top != NULL)
+    {
+        Node* temp_top = pStack->top;
+        pStack->top = pStack->top->next;
+        free(temp_top);
+        return SUCCESS;
+    }
+    
+    else
+    {
+        printf("Stack is empty\n");
+        return FAILURE;
+    
+    }
+}
+
+char stack_top(STACK hStack)
+{
+    Stack* pStack = (Stack*)hStack;
+    
+    if(pStack->top == NULL)
+    {
+        return '!';
+    }
+    return pStack->top->data;
+}
+
+void stack_destroy(STACK* phStack)
+{
+    Stack* pStack = (Stack*)*phStack;
+    Node* next;
+    while(pStack->top != NULL)
+    {
+        next = pStack->top->next;
+        free(pStack->top);
+        pStack->top =  next;
+    }
+    
+    pStack->top = NULL;
+    free(pStack->top);
+    free(pStack);
+    *phStack = NULL;
+}
+
+Boolean stack_empty(STACK hStack)
+{
+    Stack* pStack = (Stack*)hStack;
+    if(pStack->top == NULL)
+    {
+        return TRUE;
+    }
+    
+    return FALSE;
+}
+
+/****************** stack.h file **************************/
+#ifndef STACK_H
+#define STACK_H
+#include "status.h"
+
+typedef void* STACK;
+STACK stack_init_default(void);
+
+Status stack_push(STACK hStack, char value);
+Status stack_pop(STACK hStack);
+char stack_top(STACK hStack);
+Boolean stack_empty(STACK hStack);
+void stack_destroy(STACK* phStack);
+
+#endif
+
+/********************** status.h file ***********************/
+#ifndef STATUS_H
+#define STATUS_H
+
+enum status {FAILURE, SUCCESS};
+typedef enum status Status;
+
+enum boolean {FALSE, TRUE};
+typedef enum boolean Boolean;
+
+#endif
