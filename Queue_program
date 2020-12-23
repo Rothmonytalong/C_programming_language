@@ -1,0 +1,205 @@
+/******************** main.c file ****************************/
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "queue.h"
+
+int main(int argc, char* argv[])
+{
+    QUEUE right;
+    QUEUE left;
+    char dir[100];
+    int length;
+    int total = 0;;
+    int isLeft = 0;
+    right = q_init_default();
+    left = q_init_default();
+
+    int count = 0;
+    int cases;
+    scanf("%d", &cases);
+    int i, j;
+    for (i = 0; i < cases; i++)
+    {
+        int l, m;
+        scanf("%d%d", &l, &m);
+        l *= 100;
+        for (j = 0; j < m ; j++) {
+            scanf("%d", &length);
+            scanf("%s", dir);
+
+            if (dir[0] == 'l') {
+                q_enqueue(left, length);
+            }
+            else  {
+                q_enqueue(right, length);
+            }
+        }
+        count = 0;
+        while (1) {
+            while (!is_empty(left) && total + q_front(left) < l)
+            {
+                total += q_front(left);
+                q_dequeue(left);
+            }
+            count++;
+            total = 0;
+            if (is_empty(left) && is_empty(right))
+                break;
+            while (!is_empty(right) && total + q_front(right) < l)
+            {
+                total += q_front(right);
+                q_dequeue(right);
+            }
+            count++;
+            total = 0;
+            if (is_empty(left) && is_empty(right))
+                break;
+        }
+        printf("%d\n", count);
+    }
+    q_destroy(&left);
+    q_destroy(&right);
+    return 0;
+}
+
+
+/************************ queue.c file ********************************/
+#include <stdio.h>
+#include <stdlib.h>
+#include "queue.h"
+
+struct node;
+
+typedef struct node Node;
+
+struct node {
+    int data;
+    Node* next;
+};
+
+struct queue;
+
+typedef struct queue Queue;
+
+struct queue {
+    Node* head;
+    Node* tail;
+};
+
+QUEUE q_init_default(void) {
+    Queue* pQ;
+    pQ = (Queue*)malloc(sizeof(Queue));
+    if (pQ != NULL) {
+        pQ->head = NULL;
+        pQ->tail = NULL;
+    }
+
+    return (QUEUE)pQ;
+}
+
+Status q_enqueue(QUEUE hQ, int value) {
+
+    Queue* pQ = (Queue*)hQ;
+    Node* temp;
+    temp = (Node*)malloc(sizeof(Node));
+    
+    if (temp == NULL) {
+        return FAILURE;
+    }
+    temp->data = value;
+    temp->next = NULL;
+    if (pQ->tail == NULL) {
+        pQ->head = temp;
+        pQ->tail = temp;
+    }
+    else {
+        pQ->tail->next = temp;
+        pQ->tail = temp;
+    }
+
+    return SUCCESS;
+    
+    
+}
+
+Status q_dequeue(QUEUE hQ) {
+    Queue* pQ = (Queue*)hQ;
+    Node* temp;
+    
+    temp = pQ->head;
+    if (pQ->head == NULL) {
+        return FAILURE;
+    }
+    
+    pQ->head = pQ->head->next;
+    if (pQ->head == NULL)
+        pQ->tail = NULL;
+    free(temp);
+    return SUCCESS;
+
+}
+
+int is_empty(QUEUE hQ) {
+    Queue* pQ = (Queue*)hQ;
+    if (pQ->tail == NULL || pQ->head == NULL) {
+        return 1;
+    }
+    return 0;
+}
+
+
+int q_front(QUEUE hQ) {
+    Queue* pQ = (Queue*)hQ;
+
+    if (is_empty(pQ)) {
+        return -3005;
+    }
+
+    return pQ->head->data;
+}
+
+void q_destroy(QUEUE* phQ) {
+
+    Queue* pQ = (Queue*)*phQ;
+    Node* next;
+
+    while (pQ->head != NULL) {
+        next = pQ->head->next;
+        free(pQ->head);
+        pQ->head = next;
+    }
+
+    free(pQ);
+    *phQ = NULL;
+}
+
+
+/********************** queue.h file *********************************/
+#ifndef QUEUE_H
+#define QUEUE_H
+#include "status.h"
+
+typedef void* QUEUE;
+
+QUEUE queue_init_default(void);
+
+Status queue_enqueue(QUEUE hQ, int value);
+Status queue_dequeue(QUEUE hQ);
+int queue_front(QUEUE hQ);
+int is_empty(QUEUE hQ);
+void queue_destroy(QUEUE* phQ);
+
+#endif
+
+/************************ status.h file *********************************/
+#ifndef STATUS_H
+#define STATUS_H
+
+enum status {FAILURE, SUCCESS};
+typedef enum status Status;
+
+enum boolean {FALSE, TRUE};
+typedef enum boolean Boolean;
+
+#endif
