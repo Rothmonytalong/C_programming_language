@@ -1,0 +1,216 @@
+/***************** main.c file ***************/
+#include <stdio.h>
+#include <stdlib.h>
+#include "priority_queue.h"
+
+int main(int argc, const char * argv[]) {
+    
+    PRIORITY_QUEUE hQueue = NULL;
+    hQueue = priority_queue_init_default();
+    if (hQueue == NULL)
+    {
+        printf("failed to creat Queue\n");
+        exit(1);
+    }
+    priority_queue_insert(hQueue, 9, 2);
+    priority_queue_insert(hQueue, 11, 9);
+    priority_queue_insert(hQueue, 4,  8 );
+    priority_queue_insert(hQueue, 150, 2);
+    priority_queue_insert(hQueue, 24, 7);
+
+    printf("%d\n", priority_queue_front(hQueue, NULL));
+
+    priority_queue_service(hQueue);
+    printf("%d\n", priority_queue_front(hQueue, NULL));
+    priority_queue_service(hQueue);
+    printf("%d\n", priority_queue_front(hQueue, NULL));
+    priority_queue_service(hQueue);
+    printf("%d\n", priority_queue_front(hQueue, NULL));
+    priority_queue_service(hQueue);
+    printf("%d\n", priority_queue_front(hQueue, NULL));
+    priority_queue_destroy(&hQueue);
+    
+    
+    return 0;
+}
+
+/******************** priority_queue.c file ******************/
+#include <stdio.h>
+#include <stdlib.h>
+#include "priority_queue.h"
+
+struct pair
+{
+    int data;
+    int num;
+};
+typedef struct pair Pair;
+
+struct priority_queue
+{
+    int size;
+    int capacity;
+    Pair** data;
+   
+};
+typedef struct priority_queue Prio_que;
+
+void fix(Prio_que* pP_que, int index);
+void my_swap(Pair** a, Pair** b);
+
+PRIORITY_QUEUE priority_queue_init_default(void)
+{
+    Prio_que* pP_que;
+    pP_que = (Prio_que*)malloc(sizeof(Prio_que));
+    if(pP_que != NULL)
+    {
+        pP_que->size = 0;
+        pP_que->capacity = 7;
+        pP_que->data=(Pair**)malloc(sizeof(Pair*)*pP_que->capacity);
+        
+    }
+    return (PRIORITY_QUEUE)pP_que;
+}
+
+Status priority_queue_insert(PRIORITY_QUEUE hQueue, int priority_level, int data_item)
+{
+    Prio_que* pP_que = (Prio_que*)hQueue;
+    Pair* temp = (Pair*)malloc(sizeof(Pair));
+    Pair** my_temp_array;
+    int i;
+    
+    if(temp == NULL)
+    {
+        return FAILURE;
+    }
+    temp->data = data_item;
+    temp->num = priority_level;
+    
+    if(pP_que->size >= pP_que->capacity)
+    {
+        my_temp_array = (Pair**)malloc(sizeof(Pair*) * pP_que->capacity * 2);
+        for(i = 0; i <= pP_que->size; i++)
+        {
+            my_temp_array[i] = pP_que->data[i];
+        }
+        
+        free(pP_que->data);
+        pP_que->data = my_temp_array;
+        pP_que->capacity *= 2;
+    }
+    
+    pP_que->data[pP_que->size] = temp;
+    fix(pP_que,pP_que->size);
+    pP_que->size++;
+    
+    return SUCCESS;
+    
+}
+
+Status priority_queue_service(PRIORITY_QUEUE hQueue)
+{
+    int i;
+    Prio_que* pP_que = (Prio_que*)hQueue;
+    if(priority_queue_is_empty(pP_que))
+    {
+        return FAILURE;
+    }
+    my_swap(&pP_que->data[0], &pP_que->data[pP_que->size-1]);
+    free(pP_que->data[pP_que->size-1]);
+    pP_que->size--;
+    for(i = 0; i < pP_que->size; i++)
+    {
+        fix(pP_que, i);
+    }
+     return SUCCESS;
+}
+
+
+int priority_queue_front(PRIORITY_QUEUE hQueue, Status* pStatus)
+{
+    Prio_que* pP_que = (Prio_que*)hQueue;
+    if(priority_queue_is_empty(pP_que))
+    {
+        if(*pStatus != NULL)
+        {
+            *pStatus = FAILURE;
+        }
+        return -3005;
+    }
+    
+    if(pStatus != NULL)
+    {
+        *pStatus = SUCCESS;
+    }
+    return (pP_que->data[0]->data);
+}
+
+Boolean priority_queue_is_empty(PRIORITY_QUEUE hQueue)
+{
+    Prio_que* pP_que = (Prio_que*)hQueue;
+    if(pP_que->size == 0)
+    {
+        return TRUE;
+    }
+    return FALSE;
+}
+
+void priority_queue_destroy(PRIORITY_QUEUE* phQueue)
+{
+    Prio_que* pP_que = (Prio_que*)*phQueue;
+    int i;
+    for(i = 0; i < pP_que->size; i++)
+    {
+        free(pP_que->data[i]);
+    }
+    free(pP_que->data);
+    free(pP_que);
+    *phQueue = NULL;
+    
+ }
+
+void fix(Prio_que* pP_queue, int index)
+{
+   
+    int parent_index = (index - 1)/2;
+    if(index != 0)
+    {
+        if(pP_queue->data[index]->num > pP_queue->data[parent_index]->num)
+        {
+            my_swap(&pP_queue->data[index], &pP_queue->data[parent_index]);
+            fix(pP_queue, parent_index);
+        }
+    }
+}
+
+void my_swap(Pair** a, Pair** b)
+{
+    Pair* temp;
+    temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+
+/******************** priority_queue.h ********************/
+#ifndef PRIORITY_QUEUE_H
+#define PRIORITY_QUEUE_H
+
+enum status {FAILURE, SUCCESS};
+typedef enum status Status;
+
+enum boolean {FALSE, TRUE};
+typedef enum boolean Boolean;
+
+typedef void* PRIORITY_QUEUE;
+
+PRIORITY_QUEUE priority_queue_init_default(void);
+Status priority_queue_insert(PRIORITY_QUEUE hQueue, int priority_level, int data_item);
+Status priority_queue_service(PRIORITY_QUEUE hQueue);
+int priority_queue_front(PRIORITY_QUEUE hQueue, Status* pStatus);
+Boolean priority_queue_is_empty(PRIORITY_QUEUE hQueue);
+void priority_queue_destroy(PRIORITY_QUEUE* phQueue);
+
+#endif
+
+
